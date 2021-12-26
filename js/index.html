@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta content="RUN JS online" name="description">
+    <title>RUN JS</title>
+    <style type="text/css">
+        html,
+        body {
+            border: 0 none;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+        }
+
+        body {
+            padding: 5px;
+        }
+
+        textarea {
+            border-width: 1px;
+            padding: 10px;
+            margin: 0;
+            resize: none;
+            font-family: inherit;
+        }
+
+        #code-outter {
+            min-height: 50%;
+        }
+
+        #command {
+            margin: 10px 0;
+        }
+
+        #run {
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='code-outter'>
+        <label for="code">write your js code here(use log() to output):</label>
+        <textarea id='code' placeholder="log(3+2)"></textarea>
+    </div>
+    <div id='command'><button id='run' type='button'>RUN</button></div>
+    <div id='result-outter'>
+        <label for="result">output:</label>
+        <textarea id='result' placeholder="5"></textarea>
+    </div>
+
+    <script src='https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js'></script>
+
+    <script>
+        $(function () {
+
+            $(window).resize(function () {
+
+                $('body').width($('html').width() - 10);
+                $('textarea').width($('#code-outter').width() - 22);
+
+            })
+
+            $(window).resize();
+
+
+
+
+            window.log = function (a) {
+                //console.log(a)
+                if (a instanceof Error) {
+                    var b = {
+                        name: a.name,
+                        message: a.message,
+                        lineNumber: a.lineNumber - 3,
+                        columnNumber: a.columnNumber
+                    }
+                    a = `${b.name}: ${b.message}.  line:col ${b.lineNumber}:${b.columnNumber}`;
+                }
+
+                var j_result = $('#result');
+                j_result.val(j_result.val() + JSON.stringify(a) + '\n');
+
+                j_result.height(1);
+                j_result.height(25 + j_result[0].scrollHeight);
+            }
+
+            var undo_smart_punctuation = function (str) {
+                //https://stackoverflow.com/questions/48678359/ios-11-safari-html-disable-smart-punctuation
+                //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+
+                var re = /\u2018|\u2019|\u201b|\u201c|\u201d|\u201f|\u2013|\u2014|\u2032|\u2033|\u2035|\u2036/gi;
+                //str = 'Apples are ro‘c’und, and apples are juicy.';
+                var newstr = str.replace(re, function (a) {
+                    var trans = {
+                        '\u2018': '\'',
+                        '\u201B': '\'',
+                        '\u201C': '"',
+                        '\u201F': '"',
+
+                        // Close-quotes: http://www.fileformat.info/info/unicode/category/Pf/list.htm
+                        '\u2019': '\'',
+                        '\u201D': '\"',
+
+                        // Primes: http://www.fileformat.info/info/unicode/category/Po/list.htm
+                        '\u2032': '\'',
+                        '\u2033': '"',
+                        '\u2035': '\'',
+                        '\u2036': '"',
+
+                        '\u2014': '--', // iOS 11 also replaces dashes with em-dash
+                        '\u2013': '-', // and "--" with en-dash
+                    };
+                    //console.log(a)
+                    return trans[a];
+                });
+
+                //console.log(newstr);  // oranges are round, and oranges are juicy.
+                return newstr;
+            }
+
+            $('#run').click(function (a) {
+                var code = $('#code').val();
+                //console.log(code)
+                //eval(code);
+                code = undo_smart_punctuation(code);
+                $('#code').val(code);
+
+                try {
+                    $('#result').val('');
+
+                    Function('"use strict";\n' + code)();
+                } catch (e) {
+
+                    log(e)
+                }
+            })
+
+            var hash = location.hash.substring(1),
+                code = decodeURIComponent(hash);
+
+            if (code) {
+                $('#code').val(code);
+                $('#run').click();
+            }
+
+            function fixedEncodeURIComponent(str) {
+                return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+                    return '%' + c.charCodeAt(0).toString(16);
+                });
+            }
+
+            $('#code').keyup(function () {
+                //log($('#code').val());
+                location.hash = fixedEncodeURIComponent($('#code').val());
+
+                $(this).height(1);
+                $(this).height(25 + this.scrollHeight);
+            })
+            $('#code').keyup();
+
+        })
+
+    </script>
+</body>
+
+</html>
