@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta content="Test ESnext online" name="description">
+    <title>Test ESnext online</title>
+    <style type="text/css">
+        html,
+        body {
+            border: 0 none;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+        }
+
+        body {
+            padding: 5px;
+        }
+
+        textarea {
+            border-width: 1px;
+            padding: 10px;
+            margin: 0;
+            resize: none;
+            font-family: inherit;
+        }
+
+        #code-outter {
+            min-height: 50%;
+        }
+
+        #command {
+            margin: 10px 0;
+        }
+
+        #run {
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id='result'>
+
+    </div>
+
+    <script>
+        //https://dev.to/brayanarrieta/new-javascript-features-ecmascript-2022-with-examples-4nhg
+        //https://www.infoworld.com/article/3665748/8-new-javascript-features-to-start-using-today.html
+        var resultdiv = document.querySelector('#result');
+        var result = '';
+
+        function test(name, condition) {
+            result += '<p>' + name + ': ';
+            if (condition) {
+                result += 'Yes';
+            } else {
+                result += 'No';
+            }
+            result += '</p>';
+        }
+
+        test('[].at', typeof [].at === 'function');
+        test('Crypto.randomUUID', typeof Crypto.randomUUID === 'function');
+
+        resultdiv.innerHTML = result;
+    </script>
+</body>
+
+</html>
