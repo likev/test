@@ -50,11 +50,17 @@
 
     </div>
 
+    <button id="button1">测试</button>
+
     <script>
         //https://dev.to/brayanarrieta/new-javascript-features-ecmascript-2022-with-examples-4nhg
         //https://www.infoworld.com/article/3665748/8-new-javascript-features-to-start-using-today.html
         var resultdiv = document.querySelector('#result');
         var result = '';
+
+        var console = {
+            log: function (e) { result += e }
+        };
 
         function test(name, condition) {
             result += '<p>' + name + ': ';
@@ -336,6 +342,9 @@
 
             resultdiv.innerHTML = result;
         }
+
+        var button1 = document.querySelector('#result');
+        button1.addEventListener('click', test2);
 
         test2();
     </script>
